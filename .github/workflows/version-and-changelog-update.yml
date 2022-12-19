@@ -10,16 +10,21 @@ jobs:
     outputs:
       labelNames: ${{ steps.add_labels.outputs.labelNames }}
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@ebacdc22ef6c2cfb85ee5ded8f2e640f4c776dd5 # v2.0.0
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
       - name: Print GitHub context
         run: echo "$GITHUB_CONTEXT"
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
           
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
       
       - name: Is there a issue linked in "development"?
         id: validator
-        uses: HarshCasper/validate-issues-over-pull-requests@v0.1.2
+        uses: HarshCasper/validate-issues-over-pull-requests@d5fa1f1dcde123b7ffd744d2e703697ad6d3f7aa # v0.1.2
         with:
           prbody: ${{ github.event.pull_request.body }}
           prurl: ${{ github.event.pull_request.url }}
@@ -66,7 +71,7 @@ jobs:
       - name: Find linked issues
         if: ${{ steps.validator.outputs.valid == 1 }}
         id: links
-        uses: hossainemruz/linked-issues@main
+        uses: hossainemruz/linked-issues@a850d76081f69984c9f3f1d5c2f6e8d0b8743881 # main
         with:
           pr_url: ${{github.event.pull_request.html_url}}
           format: IssueNumber
@@ -118,12 +123,17 @@ jobs:
       futureRelease: ${{ steps.extend_version.outputs.futureRelease }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.1.0
+      - name: Harden Runner
+        uses: step-security/harden-runner@ebacdc22ef6c2cfb85ee5ded8f2e640f4c776dd5 # v2.0.0
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
         with:
           fetch-depth: 0
       
       - name: Increase version depending on labels
-        uses: HardNorth/github-version-generate@v1.3.0
+        uses: HardNorth/github-version-generate@91998704a2b37be20604933d9c989ebade9c5f89 # v1.3.0
         with:
           version-source: file
           version-file: ${{ env.VERSION_FILE_NAME }}
@@ -202,13 +212,18 @@ jobs:
     name: Update CHANGELOG.md
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.1.0
+      - name: Harden Runner
+        uses: step-security/harden-runner@ebacdc22ef6c2cfb85ee5ded8f2e640f4c776dd5 # v2.0.0
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
         with:
           fetch-depth: 0
       
       - name: Generate CHANGELOG.md
         id: generate_changelog
-        uses: heinrichreimer/github-changelog-generator-action@v2.3
+        uses: heinrichreimer/github-changelog-generator-action@6f5b9494dd265d6fb7243a10c53dc0169c55f247 # v2.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           dateFormat: "%d.%m.%Y"

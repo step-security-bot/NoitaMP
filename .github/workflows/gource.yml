@@ -9,13 +9,18 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@ebacdc22ef6c2cfb85ee5ded8f2e640f4c776dd5 # v2.0.0
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
       - name: 'Checkout'
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
         with:
           fetch-depth: 0
 
       - name: 'Gource Action'
-        uses: nbprojekt/gource-action@v1
+        uses: nbprojekt/gource-action@d2fdf85904db416b69445dae5551282528e052ae # v1.2.1
         with:
           avatars_auto_fetch: true
           gource_title: 'NoitaMP Gource master'
@@ -26,7 +31,7 @@ jobs:
           gource_seconds_per_day: 0.1
 
       - name: 'Upload gource video'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3.1.1
         with:
           name: Gource
           path: ./gource/gource.mp4

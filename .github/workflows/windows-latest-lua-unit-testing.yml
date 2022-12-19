@@ -18,8 +18,13 @@ jobs:
       lua_install_include_dir: ${{ github.workspace }}\Lua\include
 
     steps:
-      - uses: actions/checkout@v3.1.0
-      - uses: msys2/setup-msys2@v2
+      - name: Harden Runner
+        uses: step-security/harden-runner@ebacdc22ef6c2cfb85ee5ded8f2e640f4c776dd5 # v2.0.0
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
+      - uses: msys2/setup-msys2@d40200dc2db4c351366b048a9565ad82919e1c24 # v2
         with:
           msystem: MINGW32
           update: true
@@ -155,7 +160,7 @@ jobs:
           #cat ${{ github.workspace }}/luacov.report.out
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 # v3.1.1
         with:
           directory: ${{ github.workspace }}
           flags: unittesting
